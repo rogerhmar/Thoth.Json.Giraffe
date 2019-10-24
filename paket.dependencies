@@ -5,6 +5,10 @@ nuget FSharp.Core redirects:force, content:none
 nuget Giraffe >= 3.6 lowest_matching:true
 nuget Thoth.Json.Net
 
+nuget Expecto ~> 8.12.0
+nuget YoloDev.Expecto.TestSdk  ~> 0.8.0
+nuget Microsoft.NET.Test.Sdk ~> 16.3.0
+
 group netcorebuild
     source https://www.nuget.org/api/v2
     framework: netstandard2.0
