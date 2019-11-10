@@ -27,3 +27,4 @@ group netcorebuild
     nuget Fake.Tools.Git
     nuget Fake.JavaScript.Yarn
     nuget Fake.Api.GitHub
+    nuget Fake.DotNet.Cli

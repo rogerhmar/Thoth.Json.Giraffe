@@ -25,9 +25,8 @@ let versionFromGlobalJson : DotNet.CliInstallOptions -> DotNet.CliInstallOptions
     )
 
 let dotnetSdk = lazy DotNet.install versionFromGlobalJson
-let inline dtntWorkDir wd =
-    DotNet.Options.lift dotnetSdk.Value
-    >> DotNet.Options.withWorkingDirectory wd
+let inline dotnetSimple arg = DotNet.Options.lift dotnetSdk.Value arg
+
 
 let inline yarnWorkDir (ws : string) (yarnParams : Yarn.YarnParams) =
     { yarnParams with WorkingDirectory = ws }
@@ -38,12 +37,12 @@ module Source =
     let dir = root </> "src"
     let projectFile = dir </> "Thoth.Json.Giraffe.fsproj"
 
-// module Tests =
-//     let dir = root </> "tests"
-//     let projectFile = dir </> "Tests.fsproj"
-
 let gitOwner = "thoth-org"
 let repoName = "Thoth.Json.Giraffe"
+
+let solutionName = "Thoth.Json.Giraffe.sln"
+
+let runDotnetCli cmd = DotNet.exec dotnetSimple cmd solutionName
 
 module Util =
 
@@ -75,20 +74,10 @@ module Logger =
     let error str = Printf.kprintf (fun s -> use c = consoleColor ConsoleColor.Red in printf "%s" s) str
     let errorfn str = Printf.kprintf (fun s -> use c = consoleColor ConsoleColor.Red in printfn "%s" s) str
 
-let run (cmd:string) dir args  =
-    Command.RawCommand(cmd, Arguments.OfArgs args)
-    |> CreateProcess.fromCommand
-    |> CreateProcess.withWorkingDirectory dir
-    |> Proc.run
-    |> ignore
-
 Target.create "Clean" (fun _ ->
-    !! "src/**/bin"
-    ++ "src/**/obj"
-    ++ "tests/**/bin"
-    ++ "tests/**/obj"
-    ++ "temp/"
-    |> Shell.cleanDirs
+   let result = runDotnetCli "clean"
+   if not result.OK then
+       failwith "failing during clean"
 )
 
 Target.create "YarnInstall"(fun _ ->
@@ -96,8 +85,19 @@ Target.create "YarnInstall"(fun _ ->
 )
 
 Target.create "DotnetRestore" (fun _ ->
-    DotNet.restore (dtntWorkDir Source.dir) ""
-    // DotNet.restore (dtntWorkDir Tests.dir) ""
+   DotNet.restore dotnetSimple solutionName
+)
+
+Target.create "Build" (fun _ ->
+   let result = runDotnetCli "build"
+   if not result.OK then
+       failwith "failing build"
+)
+
+Target.create "Test" (fun _ ->
+   let result = runDotnetCli "test"
+   if not result.OK then
+       failwith "failing tests"
 )
 
 let needsPublishing (versionRegex: Regex) (newVersion: string) projFile =
@@ -214,6 +214,8 @@ Target.create "Release" (fun _ ->
 "Clean"
     ==> "YarnInstall"
     ==> "DotnetRestore"
+    ==> "Build"
+    ==> "Test"
     ==> "Publish"
     ==> "Release"
 
