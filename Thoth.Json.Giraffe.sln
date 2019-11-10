@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Thoth.Json.Giraffe", "src\Thoth.Json.Giraffe.fsproj", "{A9339301-AD21-4D15-9697-CF868ECBC741}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Thoth.Json.Giraffe.test", "tests\Thoth.Json.Giraffe.test.fsproj", "{0F98EBAA-25C1-4D6C-944D-B1FE4191A4AE}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Thoth.Json.Giraffe.Tests", "tests\Thoth.Json.Giraffe.Tests.fsproj", "{0F98EBAA-25C1-4D6C-944D-B1FE4191A4AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
