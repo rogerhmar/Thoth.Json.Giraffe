@@ -9,6 +9,9 @@ nuget Expecto ~> 8.12.0
 nuget YoloDev.Expecto.TestSdk  ~> 0.8.0
 nuget Microsoft.NET.Test.Sdk ~> 16.3.0
 
+nuget Microsoft.AspNetCore.App ~> 2.2.7
+nuget TaskBuilder.fs ~> 2.1.0
+
 group netcorebuild
     source https://www.nuget.org/api/v2
     framework: netstandard2.0
